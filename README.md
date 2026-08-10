@@ -6,13 +6,16 @@ A Codex Skill for generating newspaper and magazine match-cut openers with Remot
 
 ## Demos
 
-### Editing · English
-
-https://github.com/user-attachments/assets/3660b8f5-e801-43a4-bc09-39ce4fb77c9a
-
-### 创作 · Chinese
-
-https://github.com/user-attachments/assets/92f03700-d87c-4ee6-ac41-4b388f29a2ba
+<table>
+  <tr>
+    <th>创作 · Chinese</th>
+    <th>Editing · English</th>
+  </tr>
+  <tr>
+    <td><video src="https://github.com/user-attachments/assets/92f03700-d87c-4ee6-ac41-4b388f29a2ba" controls playsinline></video></td>
+    <td><video src="https://github.com/user-attachments/assets/3660b8f5-e801-43a4-bc09-39ce4fb77c9a" controls playsinline></video></td>
+  </tr>
+</table>
 
 Both demos are 720 × 1280, 30fps, approximately eight seconds long, and switch complete newspaper editions on musical beats.
 

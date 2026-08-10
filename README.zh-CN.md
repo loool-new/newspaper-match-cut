@@ -6,13 +6,16 @@
 
 ## 效果演示
 
-### 创作 · 中文版
-
-https://github.com/user-attachments/assets/92f03700-d87c-4ee6-ac41-4b388f29a2ba
-
-### Editing · 英文版
-
-https://github.com/user-attachments/assets/3660b8f5-e801-43a4-bc09-39ce4fb77c9a
+<table>
+  <tr>
+    <th>创作 · 中文版</th>
+    <th>Editing · 英文版</th>
+  </tr>
+  <tr>
+    <td><video src="https://github.com/user-attachments/assets/92f03700-d87c-4ee6-ac41-4b388f29a2ba" controls playsinline></video></td>
+    <td><video src="https://github.com/user-attachments/assets/3660b8f5-e801-43a4-bc09-39ce4fb77c9a" controls playsinline></video></td>
+  </tr>
+</table>
 
 两段示例均为 720 × 1280、30fps、约 8 秒，并按照音乐节奏切换完整报纸版式。
 
