@@ -1,5 +1,10 @@
 import {Composition} from 'remotion';
-import {NewspaperMatchCut, newspaperMatchCutSchema} from './NewspaperMatchCut';
+import {
+  DEFAULT_BODY_PARAGRAPHS,
+  DEFAULT_HEADLINE_TEMPLATES,
+  NewspaperMatchCut,
+  newspaperMatchCutSchema
+} from './NewspaperMatchCut';
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -15,6 +20,8 @@ export const RemotionRoot: React.FC = () => {
         keyword: "__KEYWORD__",
         kicker: "__KICKER__",
         topic: "__TOPIC__",
+        headlineTemplates: __HEADLINE_TEMPLATES__,
+        bodyParagraphs: __BODY_PARAGRAPHS__,
         seed: "edition-01",
         accentColor: "#e8ef39",
         paperColor: "#e8e5da",

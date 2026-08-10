@@ -7,6 +7,16 @@ export const newspaperMatchCutSchema = z.object({
   keyword: z.string().min(1),
   kicker: z.string(),
   topic: z.string(),
+  headlineTemplates: z
+    .array(
+      z.string().min(1).refine(
+        (value) => value.split('{{keyword}}').length === 2,
+        'Each headline must contain exactly one {{keyword}} marker'
+      )
+    )
+    .min(1)
+    .max(24),
+  bodyParagraphs: z.array(z.string().min(1)).min(1).max(24),
   seed: z.string(),
   accentColor: zColor(),
   paperColor: zColor(),
@@ -45,6 +55,9 @@ const EDITIONS: readonly Edition[] = [
   {font: 'Courier New, Courier, monospace', weight: 700, size: 0.061, focusTemplate: 'Inside the {{keyword}} file: decisions, systems, and trust', body: 'Documents from the field show how ordinary decisions accumulate into lasting outcomes. Each record captures a question, the evidence available at the time, and the reasoning used to move forward. Read together, they reveal that dependable work is rarely the product of one insight. It emerges from a repeatable process of checking facts, comparing alternatives, and communicating consequences.', columns: 3, align: 'left', paper: '#e3dfd2', texture: 'crumpled-white.png', articleLeft: 12, articleTop: 31, articleWidth: 90, pageScale: 1.0}
 ];
 
+export const DEFAULT_HEADLINE_TEMPLATES = EDITIONS.map((edition) => edition.focusTemplate);
+export const DEFAULT_BODY_PARAGRAPHS = EDITIONS.map((edition) => edition.body);
+
 const PAPER_TEXTURE = `url("${staticFile('paper-fiber.svg')}")`;
 const hash = (value: string): number => {
   let result = 2166136261;
@@ -75,9 +88,10 @@ const EditorialContent: React.FC<{
   edition: Edition;
   width: number;
   focusParts: readonly [string, string];
+  body: string;
   keywordRef?: React.RefObject<HTMLSpanElement | null>;
   showKeyword: boolean;
-}> = ({props, edition, width, focusParts, keywordRef, showKeyword}) => {
+}> = ({props, edition, width, focusParts, body, keywordRef, showKeyword}) => {
   const articleFontSize = width * edition.size;
   return (
     <>
@@ -126,7 +140,7 @@ const EditorialContent: React.FC<{
             textAlign: 'justify'
           }}
         >
-          {edition.body}
+          {body}
         </div>
       </article>
     </>
@@ -137,7 +151,9 @@ const AlignedEdition: React.FC<{
   props: Props;
   edition: Edition;
   editionIndex: number;
-}> = ({props, edition, editionIndex}) => {
+  headlineTemplate: string;
+  body: string;
+}> = ({props, edition, editionIndex, headlineTemplate, body}) => {
   const {width, height} = useVideoConfig();
   const pageRef = useRef<HTMLDivElement>(null);
   const keywordRef = useRef<HTMLSpanElement>(null);
@@ -155,7 +171,7 @@ const AlignedEdition: React.FC<{
   }, [height, props.focusY, width]);
 
   const editionDrift = between(`${props.seed}-${editionIndex}-scale`, -0.012, 0.012);
-  const focusText = edition.focusTemplate.replace('{{topic}}', props.topic);
+  const focusText = headlineTemplate.replace('{{topic}}', props.topic);
   const focusParts = focusText.split('{{keyword}}');
   if (focusParts.length !== 2) throw new Error('Each focusTemplate must contain exactly one {{keyword}} marker');
   const typedFocusParts = focusParts as [string, string];
@@ -213,7 +229,7 @@ const AlignedEdition: React.FC<{
               WebkitMaskImage: mediumMask
             }}
           >
-            <EditorialContent props={props} edition={edition} width={width} focusParts={typedFocusParts} showKeyword={false} />
+            <EditorialContent props={props} edition={edition} width={width} focusParts={typedFocusParts} body={body} showKeyword={false} />
           </div>
           <div
             aria-hidden="true"
@@ -225,7 +241,7 @@ const AlignedEdition: React.FC<{
               WebkitMaskImage: outerMask
             }}
           >
-            <EditorialContent props={props} edition={edition} width={width} focusParts={typedFocusParts} showKeyword={false} />
+            <EditorialContent props={props} edition={edition} width={width} focusParts={typedFocusParts} body={body} showKeyword={false} />
           </div>
           <div
             style={{
@@ -240,6 +256,7 @@ const AlignedEdition: React.FC<{
               edition={edition}
               width={width}
               focusParts={typedFocusParts}
+              body={body}
               keywordRef={keywordRef}
               showKeyword
             />
@@ -255,6 +272,8 @@ export const NewspaperMatchCut: React.FC<Props> = (props) => {
   const activeFrame = Math.min(frame, props.settleFrame);
   const editionIndex = Math.floor(activeFrame / props.cutIntervalFrames);
   const edition = EDITIONS[editionIndex % EDITIONS.length];
+  const headlineTemplate = props.headlineTemplates[editionIndex % props.headlineTemplates.length];
+  const body = props.bodyParagraphs[editionIndex % props.bodyParagraphs.length];
   const editionTexture = staticFile(`backgrounds/${edition.texture}`);
 
   return (
@@ -268,7 +287,14 @@ export const NewspaperMatchCut: React.FC<Props> = (props) => {
           backgroundBlendMode: 'multiply, soft-light, normal'
         }}
       />
-      <AlignedEdition key={editionIndex} props={props} edition={edition} editionIndex={editionIndex} />
+      <AlignedEdition
+        key={editionIndex}
+        props={props}
+        edition={edition}
+        editionIndex={editionIndex}
+        headlineTemplate={headlineTemplate}
+        body={body}
+      />
       <AbsoluteFill
         style={{
           boxShadow: 'inset 0 0 180px rgba(41,35,25,0.14)',

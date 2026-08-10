@@ -11,10 +11,11 @@ Create a sequence of complete newspaper layouts that match-cut around one sharp 
 
 1. Inspect supplied references with `ffprobe` and contact sheets. Identify the keyword anchor, cut cadence, page families, blur direction, highlight treatment, and final hold.
 2. Read [references/visual-recipe.md](references/visual-recipe.md) before changing composition structure or timing.
-3. For a new project, run `python3 scripts/create_newspaper_match_cut.py <destination> --keyword "..." --kicker "..." --topic "..."`.
+3. For a new project, run `python3 scripts/create_newspaper_match_cut.py <destination> --keyword "..." --kicker "..."`. Add repeated `--headline "A complete {{keyword}} sentence"` and `--body "A complete paragraph"` flags to supply custom editorial copy.
 4. For an existing Remotion project, copy the relevant template files from `assets/remotion-template/` and merge dependencies without overwriting unrelated work.
    The template includes six default paper backgrounds in `public/backgrounds/`; keep them paired with editions or replace them with licensed project textures.
 5. Build each edition from a complete authored headline sentence and a coherent body paragraph. Store the headline as one template containing exactly one `{{keyword}}` marker; split it only at render time to style the native keyword span.
+   Runtime props `headlineTemplates` and `bodyParagraphs` accept 1–24 entries and cycle independently across editions, so one body may be reused or every edition may receive unique copy.
 6. Render the keyword exactly once inside its original headline or sentence. Measure that DOM span, then translate and scale the complete newspaper page until the native keyword reaches the shared match-cut anchor.
 7. Keep non-focus words readable with spatial focus falloff: a sharp elliptical center around the native keyword, a lightly blurred transition field, and a strongly blurred outer field. Blend the three copies with broad complementary radial masks. The blur amount increases with distance from the keyword; the glyphs must not stretch radially outward.
 8. Drive every animation with `useCurrentFrame()`, `interpolate()`, or explicit frame math. Never use CSS transitions, CSS keyframes, timers, or `Math.random()`.
@@ -26,6 +27,7 @@ Create a sequence of complete newspaper layouts that match-cut around one sharp 
 - Treat the newspaper as the scene, not as a background behind floating typography.
 - Keep the keyword in normal document flow at its natural position inside every edition.
 - Author complete sentences and paragraphs; do not model the headline as independent prefix, keyword, and suffix fields or repeat filler copy.
+- Prefer user-supplied `headlineTemplates` and `bodyParagraphs` when provided; use the bundled English copy only as a portable default.
 - Highlight one complete word with a flat rectangular marker; do not split it into ransom-note letters.
 - Align editions by moving the whole measured page, not by moving or duplicating the keyword.
 - Use no card shadow, torn-paper tile, independent letter rotation, or per-letter entrance.

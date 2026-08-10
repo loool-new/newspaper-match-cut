@@ -62,7 +62,7 @@ Author every focus headline as a complete natural sentence containing exactly on
 
 ## Parameters
 
-Expose `keyword`, `kicker`, `topic`, `seed`, `accentColor`, `paperColor`, `inkColor`, `cutIntervalFrames`, `settleFrame`, `focusY`, `blurMin`, `blurMax`, and `focusScale`.
+Expose `keyword`, `kicker`, `topic`, `headlineTemplates`, `bodyParagraphs`, `seed`, `accentColor`, `paperColor`, `inkColor`, `cutIntervalFrames`, `settleFrame`, `focusY`, `blurMin`, `blurMax`, and `focusScale`. `headlineTemplates` contains complete sentences with exactly one `{{keyword}}` marker; `bodyParagraphs` contains complete paragraphs. Cycle each non-empty array by edition index.
 
 ## Verification
 
