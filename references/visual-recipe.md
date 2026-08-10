@@ -13,6 +13,18 @@ The effect is a rapid sequence of complete newspaper pages. A single highlighted
 | Resolve | 55–65 | Reduce layout jitter and blur |
 | Hold | 66–75 | Keep the last edition readable for the handoff |
 
+This table is the fixed-timing fallback. In music mode, the selected audio segment defines the composition length and detected onset frames replace the regular 3–6-frame cadence.
+
+## Music timing
+
+- Analyze audio once during project generation with `scripts/analyze_audio_beats.py`; never analyze it inside Remotion.
+- Detect local onset peaks from a mono PCM energy envelope and quantize their timestamps to composition frames. The result must be deterministic for the same source segment, fps, and density.
+- Offer `sparse`, `standard`, and `dense` profiles. Use `standard` unless the user requests another density.
+- Keep beat frames relative to the trimmed segment, sorted, unique, greater than frame 0, and below `durationInFrames`.
+- Let repeated `--beat-frame` values replace automatic detection for exact editorial timing.
+- Trim and transcode only the selected source range into `public/audio/source.mp3`. Do not copy an entire track when the video uses only a short range.
+- Keep fixed timing available when no audio is supplied or when the user explicitly selects it.
+
 ## Layer model
 
 1. `PaperField`: warm paper color, fiber texture, wrinkles, vignette.
@@ -70,7 +82,7 @@ Author every focus headline as a complete natural sentence containing exactly on
 
 ## Parameters
 
-Expose `language`, `keyword`, `kicker`, `topic`, `headlineTemplates`, `bodyParagraphs`, `seed`, `accentColor`, `paperColor`, `inkColor`, `cutIntervalFrames`, `settleFrame`, `focusY`, `blurMin`, `blurMax`, and `focusScale`. `headlineTemplates` contains complete sentences with exactly one `{{keyword}}` marker; `bodyParagraphs` contains complete paragraphs. Cycle each non-empty array by edition index.
+Expose `language`, `keyword`, `kicker`, `topic`, `headlineTemplates`, `bodyParagraphs`, `seed`, `accentColor`, `paperColor`, `inkColor`, `timingMode`, `beatFrames`, `audioSrc`, `audioDurationSeconds`, `cutIntervalFrames`, `settleFrame`, `focusY`, `blurMin`, `blurMax`, and `focusScale`. `headlineTemplates` contains complete sentences with exactly one `{{keyword}}` marker; `bodyParagraphs` contains complete paragraphs. Cycle each non-empty array by edition index.
 
 ## Verification
 
@@ -81,3 +93,4 @@ Expose `language`, `keyword`, `kicker`, `topic`, `headlineTemplates`, `bodyParag
 - Background text is most blurred on cut frames and softer between cuts.
 - Paper texture loads through `staticFile()` without a 404.
 - Two renders of the same frame are pixel-identical.
+- In beat mode, edition changes occur exactly on `beatFrames`, the audio begins at composition frame 0, and the rendered file contains an audio stream.

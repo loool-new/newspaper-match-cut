@@ -1,4 +1,4 @@
 interface:
   display_name: "Remotion Newspaper Match Cut"
   short_description: "Create highlighted-word newspaper match-cut openers"
-  default_prompt: "Use $remotion-newspaper-match-cut to create a rapid newspaper match-cut opener around one highlighted keyword. Before doing any work, first ask whether the video should use Chinese or English. After I answer, ask whether I will provide complete headlines and body text or want default copy in that language."
+  default_prompt: "Use $remotion-newspaper-match-cut to create a rapid newspaper match-cut opener around one highlighted keyword. Before doing any work, ask in order: Chinese or English; custom complete copy or default copy; music-beat timing or fixed timing."

@@ -1,5 +1,6 @@
 import React, {useLayoutEffect, useRef, useState} from 'react';
 import {AbsoluteFill, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {Audio} from '@remotion/media';
 import {z} from 'zod';
 import {zColor} from '@remotion/zod-types';
 
@@ -22,6 +23,10 @@ export const newspaperMatchCutSchema = z.object({
   accentColor: zColor(),
   paperColor: zColor(),
   inkColor: zColor(),
+  timingMode: z.enum(['fixed', 'beats']),
+  beatFrames: z.array(z.number().int().min(0)),
+  audioSrc: z.string(),
+  audioDurationSeconds: z.number().min(0),
   cutIntervalFrames: z.number().int().min(2).max(12),
   settleFrame: z.number().int().min(12).max(240),
   focusY: z.number().min(0.25).max(0.7),
@@ -295,8 +300,13 @@ const AlignedEdition: React.FC<{
 
 export const NewspaperMatchCut: React.FC<Props> = (props) => {
   const frame = useCurrentFrame();
+  const {fps} = useVideoConfig();
   const activeFrame = Math.min(frame, props.settleFrame);
-  const editionIndex = Math.floor(activeFrame / props.cutIntervalFrames);
+  const fixedEditionIndex = Math.floor(activeFrame / props.cutIntervalFrames);
+  const beatEditionIndex = props.beatFrames.filter((beatFrame) => beatFrame <= frame).length;
+  const editionIndex = props.timingMode === 'beats' && props.beatFrames.length > 0
+    ? beatEditionIndex
+    : fixedEditionIndex;
   const edition = EDITIONS[editionIndex % EDITIONS.length];
   const headlineTemplate = props.headlineTemplates[editionIndex % props.headlineTemplates.length];
   const body = props.bodyParagraphs[editionIndex % props.bodyParagraphs.length];
@@ -304,6 +314,12 @@ export const NewspaperMatchCut: React.FC<Props> = (props) => {
 
   return (
     <AbsoluteFill lang={props.language === 'zh' ? 'zh-CN' : 'en'} style={{backgroundColor: edition.paper || props.paperColor, overflow: 'hidden'}}>
+      {props.audioSrc ? (
+        <Audio
+          src={staticFile(props.audioSrc)}
+          trimAfter={Math.round(props.audioDurationSeconds * fps)}
+        />
+      ) : null}
       <AbsoluteFill
         style={{
           backgroundColor: edition.paper || props.paperColor,

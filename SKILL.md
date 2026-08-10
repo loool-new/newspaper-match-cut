@@ -1,6 +1,6 @@
 ---
 name: remotion-newspaper-match-cut
-description: Create or adapt Remotion newspaper match-cut openers where complete editorial pages, headlines, fonts, crops, and paper treatments switch every few frames while one highlighted keyword remains locked near the same screen position. Use for newspaper or magazine editorial intros, highlighted-word match cuts, rapid print-layout transitions, and title sequences with dynamic blur on all non-focus text.
+description: Create or adapt Remotion newspaper match-cut openers where complete editorial pages, headlines, fonts, crops, and paper treatments switch every few frames or on detected music beats while one highlighted keyword remains locked near the same screen position. Use for newspaper or magazine editorial intros, highlighted-word match cuts, beat-synced print-layout transitions, and title sequences with dynamic blur on all non-focus text.
 ---
 
 # Remotion Newspaper Match Cut
@@ -19,23 +19,31 @@ After the language is selected, ask for the text source:
 
 > 文字内容由你提供完整标题和正文，还是使用所选语言的默认文本自动生成？
 
+After the text source is selected and any custom copy is collected, ask for timing:
+
+> 版式切换需要跟随音乐节奏，还是使用默认固定间隔？
+
 - Do not ask the text-source question before the language is known.
 - If the user chooses custom text, collect the focus keyword plus at least one complete headline and one complete body paragraph. Convert the keyword position in each headline to exactly one `{{keyword}}` marker.
 - If the user chooses default text, use the bundled Chinese or English arrays matching the selected language and only customize the focus keyword, kicker, and topic as needed.
-- Do not silently choose a language or text source on the user's behalf.
+- If the user chooses music beats, collect an audio file and the requested time range. Ask for sparse, standard, or dense cuts only when the user has a preference; otherwise use `standard`.
+- If the user chooses fixed timing, do not require audio. Audio may still be added later without changing the selected timing mode.
+- Do not silently choose a language, text source, or timing mode on the user's behalf.
 
 ## Workflow
 
-1. After both required choices, inspect supplied references with `ffprobe` and contact sheets. Identify the keyword anchor, cut cadence, page families, blur direction, highlight treatment, and final hold.
+1. After all three required choices, inspect supplied references with `ffprobe` and contact sheets. Identify the keyword anchor, cut cadence, page families, blur direction, highlight treatment, and final hold.
 2. Read [references/visual-recipe.md](references/visual-recipe.md) before changing composition structure or timing.
-3. For a new project, run `python3 scripts/create_newspaper_match_cut.py <destination> --language zh --keyword "..." --kicker "..."` or use `--language en`. Add repeated `--headline "A complete {{keyword}} sentence"` and `--body "A complete paragraph"` flags to supply custom editorial copy.
+3. For a new fixed-timing project, run `python3 scripts/create_newspaper_match_cut.py <destination> --language zh --keyword "..." --kicker "..."` or use `--language en`. Add repeated `--headline "A complete {{keyword}} sentence"` and `--body "A complete paragraph"` flags to supply custom editorial copy.
+   For beat timing, add `--audio <path> --audio-start 0 --audio-duration 8 --beat-density standard`. The generator analyzes the selected segment, copies only that segment into the project, sets the composition duration, and writes deterministic beat frames into `Root.tsx`.
+   Use repeated `--beat-frame <frame>` flags when the user supplies exact cue points or when automatic detection needs editorial correction. Manual frames override automatic detection. Never bundle or hardcode a copyrighted song in the Skill.
 4. For an existing Remotion project, copy the relevant template files from `assets/remotion-template/` and merge dependencies without overwriting unrelated work.
    The template includes six default paper backgrounds in `public/backgrounds/`; keep them paired with editions or replace them with licensed project textures.
 5. Build each edition from a complete authored headline sentence and a coherent body paragraph. Store the headline as one template containing exactly one `{{keyword}}` marker; split it only at render time to style the native keyword span.
    Runtime props `headlineTemplates` and `bodyParagraphs` accept 1–24 entries and cycle independently across editions, so one body may be reused or every edition may receive unique copy.
 6. Render the keyword exactly once inside its original headline or sentence. Measure that DOM span, then translate and scale the complete newspaper page until the native keyword reaches the shared match-cut anchor.
 7. Keep non-focus words readable with spatial focus falloff: a sharp elliptical center around the native keyword, a lightly blurred transition field, and a strongly blurred outer field. Blend the three copies with broad complementary radial masks. The blur amount increases with distance from the keyword; the glyphs must not stretch radially outward.
-8. Drive every animation with `useCurrentFrame()`, `interpolate()`, or explicit frame math. Never use CSS transitions, CSS keyframes, timers, or `Math.random()`.
+8. Drive every animation with `useCurrentFrame()`, `interpolate()`, or explicit frame math. In beat mode, derive the edition index only from the stored `beatFrames` array; do not analyze audio during render. Never use CSS transitions, CSS keyframes, timers, or `Math.random()`.
 9. Expose creative controls through composition props and keep inline `defaultProps` in `Root.tsx`.
 10. Run `npm install`, `npm run typecheck`, and render stills at a cut frame, between cuts, and during the final hold. Render the full video only when explicitly requested.
 

@@ -26,6 +26,8 @@ Both demos are 720 × 1280, 30fps, approximately eight seconds long, and switch 
 - Three-stage spatial focus falloff: sharp center, soft transition, strong outer blur.
 - Six editorial layouts, varied font stacks, column systems, crops, and paper textures.
 - Adjustable highlight color, blur strength, focus position, scale, and cut speed.
+- Optional deterministic beat detection with sparse, standard, and dense cut profiles.
+- Automatic audio-range trimming and beat-synced edition switching, with manual cue-point override.
 - Deterministic, frame-driven Remotion rendering.
 
 ## Required first interaction
@@ -34,8 +36,9 @@ At the start of every new request, the Skill asks these questions in order:
 
 1. Should the newspaper animation use Chinese or English?
 2. Will the user provide complete headlines and body copy, or should the Skill use default copy in the selected language?
+3. Should edition changes follow music beats or use the default fixed interval?
 
-The Skill must not silently choose either option.
+The Skill must not silently choose any of these options.
 
 ## Install in Codex
 
@@ -77,6 +80,24 @@ python3 scripts/create_newspaper_match_cut.py ./custom-intro \
 
 Headline and body arrays cycle independently by edition index, so one entry can be reused or every edition can receive unique copy.
 
+## Sync cuts to music
+
+Provide a local audio file and the source range to use. The generator analyzes the segment once, stores deterministic frame cues, trims the audio into the project, and sets the composition length automatically.
+
+```bash
+python3 scripts/create_newspaper_match_cut.py ./beat-synced-intro \
+  --language en \
+  --keyword "Editing" \
+  --audio "/path/to/music.mp3" \
+  --audio-start 0 \
+  --audio-duration 8 \
+  --beat-density standard \
+  --width 720 \
+  --height 1280
+```
+
+Use `--beat-density sparse`, `standard`, or `dense` to control the number of cuts. For exact editorial cues, repeat `--beat-frame`, for example `--beat-frame 10 --beat-frame 19`; manual frames replace automatic detection. Use `--timing-mode fixed` to keep regular cuts even when audio is present.
+
 ## Run and render
 
 ```bash
@@ -98,6 +119,10 @@ npm run render
 | `headlineTemplates` | Complete headlines containing one `{{keyword}}` marker |
 | `bodyParagraphs` | Complete body paragraphs |
 | `accentColor` | Keyword highlight color |
+| `timingMode` | `fixed` or `beats` edition switching |
+| `beatFrames` | Deterministic edition-switch frames relative to the trimmed audio |
+| `audioSrc` | Project-relative audio path under `public/` |
+| `audioDurationSeconds` | Length of the selected audio segment |
 | `cutIntervalFrames` | Default edition-switch interval |
 | `focusY` | Vertical position of the shared keyword anchor |
 | `blurMin` / `blurMax` | Transition and outer blur strength |
@@ -121,6 +146,7 @@ assets/remotion-template/        Reusable Remotion project template
 examples/                        MP4 demos and preview images
 references/visual-recipe.md      Timing, layout, blur, and verification guide
 scripts/create_newspaper_match_cut.py
+scripts/analyze_audio_beats.py     Deterministic onset-to-frame analysis
 README.zh-CN.md                  Simplified Chinese documentation
 ```
 
@@ -129,6 +155,7 @@ README.zh-CN.md                  Simplified Chinese documentation
 - Python 3
 - Node.js 20 or newer
 - npm
+- ffmpeg and ffprobe when using audio or automatic beat detection
 - Remotion-compatible Chromium for preview and rendering
 
 The template uses portable system-font stacks. Exact typography can vary by operating system; supply licensed local fonts when exact visual matching matters. Ensure you have permission to redistribute any replacement fonts, newspaper scans, paper textures, and music used in exported videos.
