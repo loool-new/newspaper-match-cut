@@ -7,9 +7,21 @@ description: Create or adapt Remotion newspaper match-cut openers where complete
 
 Create a sequence of complete newspaper layouts that match-cut around one sharp highlighted keyword.
 
+## Required first interaction
+
+At the beginning of every new Skill invocation, before inspecting references, creating files, or running the Remotion workflow, actively ask the user:
+
+> 这次的报纸文字你想自己提供完整标题和正文，还是使用默认文本自动生成？
+
+Wait for the user's choice before continuing.
+
+- If the user chooses custom text, collect the focus keyword plus at least one complete headline and one complete body paragraph. Convert the keyword position in each headline to exactly one `{{keyword}}` marker.
+- If the user chooses default text, use the bundled headline and body arrays and only customize the focus keyword, kicker, and topic as needed.
+- Do not silently choose a text source on the user's behalf.
+
 ## Workflow
 
-1. Inspect supplied references with `ffprobe` and contact sheets. Identify the keyword anchor, cut cadence, page families, blur direction, highlight treatment, and final hold.
+1. After the required text-source choice, inspect supplied references with `ffprobe` and contact sheets. Identify the keyword anchor, cut cadence, page families, blur direction, highlight treatment, and final hold.
 2. Read [references/visual-recipe.md](references/visual-recipe.md) before changing composition structure or timing.
 3. For a new project, run `python3 scripts/create_newspaper_match_cut.py <destination> --keyword "..." --kicker "..."`. Add repeated `--headline "A complete {{keyword}} sentence"` and `--body "A complete paragraph"` flags to supply custom editorial copy.
 4. For an existing Remotion project, copy the relevant template files from `assets/remotion-template/` and merge dependencies without overwriting unrelated work.
