@@ -1,5 +1,12 @@
-import React, {useLayoutEffect, useRef, useState} from 'react';
-import {AbsoluteFill, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import {
+  AbsoluteFill,
+  continueRender,
+  delayRender,
+  staticFile,
+  useCurrentFrame,
+  useVideoConfig
+} from 'remotion';
 import {Audio} from '@remotion/media';
 import {z} from 'zod';
 import {zColor} from '@remotion/zod-types';
@@ -161,13 +168,13 @@ const EditorialContent: React.FC<{
           style={{
             width: '100%',
             marginTop: '1.45em',
-            columnCount: edition.columns,
+            columnCount: props.language === 'en' ? 1 : edition.columns,
             columnGap: width * 0.035,
             fontFamily: bodyFont,
             fontSize: width * 0.025,
             fontWeight: 500,
             lineHeight: props.language === 'zh' ? 1.55 : 1.3,
-            textAlign: 'justify',
+            textAlign: props.language === 'en' ? 'left' : 'justify',
             wordBreak: props.language === 'zh' ? 'break-all' : 'normal'
           }}
         >
@@ -189,6 +196,9 @@ const AlignedEdition: React.FC<{
   const pageRef = useRef<HTMLDivElement>(null);
   const keywordRef = useRef<HTMLSpanElement>(null);
   const [alignment, setAlignment] = useState<null | {dx: number; dy: number; originX: number; originY: number}>(null);
+  const [alignmentRenderHandle] = useState(() =>
+    delayRender(`Measuring newspaper edition ${editionIndex}`)
+  );
 
   useLayoutEffect(() => {
     if (!pageRef.current || !keywordRef.current) return;
@@ -200,6 +210,10 @@ const AlignedEdition: React.FC<{
       originY
     });
   }, [height, props.focusY, width]);
+
+  useEffect(() => {
+    if (alignment) continueRender(alignmentRenderHandle);
+  }, [alignment, alignmentRenderHandle]);
 
   const editionDrift = between(`${props.seed}-${editionIndex}-scale`, -0.012, 0.012);
   const focusText = headlineTemplate.replace('{{topic}}', props.topic);

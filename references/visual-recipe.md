@@ -70,6 +70,7 @@ Use local licensed fonts if supplied. System-font stacks are only a portable fal
 - Chinese defaults must contain natural complete Chinese headlines and paragraphs, not translated fragments.
 - Use Chinese headline variation through PingFang/Heiti, Songti, Kaiti, Hiragino Sans GB, and FangSong stacks. Use explicit CJK fallbacks on macOS and Windows.
 - Chinese headlines use a slightly larger line height and `word-break: break-all`; Chinese body copy uses a comfortable 1.55 line height.
+- Keep English body copy in one continuous, left-aligned column. Do not justify short English copy or fragment it across CSS columns, since both treatments create distracting gaps and broken reading order.
 - Preserve the same `{{keyword}}` marker and native-flow alignment rules in both languages.
 
 ## Bundled paper backgrounds
