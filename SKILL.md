@@ -9,21 +9,26 @@ Create a sequence of complete newspaper layouts that match-cut around one sharp 
 
 ## Required first interaction
 
-At the beginning of every new Skill invocation, before inspecting references, creating files, or running the Remotion workflow, actively ask the user:
+At the beginning of every new Skill invocation, before inspecting references, creating files, or running the Remotion workflow, ask these questions in order and wait for each answer.
 
-> 这次的报纸文字你想自己提供完整标题和正文，还是使用默认文本自动生成？
+First ask for the output language:
 
-Wait for the user's choice before continuing.
+> 这次报纸动画使用中文还是英文？
 
+After the language is selected, ask for the text source:
+
+> 文字内容由你提供完整标题和正文，还是使用所选语言的默认文本自动生成？
+
+- Do not ask the text-source question before the language is known.
 - If the user chooses custom text, collect the focus keyword plus at least one complete headline and one complete body paragraph. Convert the keyword position in each headline to exactly one `{{keyword}}` marker.
-- If the user chooses default text, use the bundled headline and body arrays and only customize the focus keyword, kicker, and topic as needed.
-- Do not silently choose a text source on the user's behalf.
+- If the user chooses default text, use the bundled Chinese or English arrays matching the selected language and only customize the focus keyword, kicker, and topic as needed.
+- Do not silently choose a language or text source on the user's behalf.
 
 ## Workflow
 
-1. After the required text-source choice, inspect supplied references with `ffprobe` and contact sheets. Identify the keyword anchor, cut cadence, page families, blur direction, highlight treatment, and final hold.
+1. After both required choices, inspect supplied references with `ffprobe` and contact sheets. Identify the keyword anchor, cut cadence, page families, blur direction, highlight treatment, and final hold.
 2. Read [references/visual-recipe.md](references/visual-recipe.md) before changing composition structure or timing.
-3. For a new project, run `python3 scripts/create_newspaper_match_cut.py <destination> --keyword "..." --kicker "..."`. Add repeated `--headline "A complete {{keyword}} sentence"` and `--body "A complete paragraph"` flags to supply custom editorial copy.
+3. For a new project, run `python3 scripts/create_newspaper_match_cut.py <destination> --language zh --keyword "..." --kicker "..."` or use `--language en`. Add repeated `--headline "A complete {{keyword}} sentence"` and `--body "A complete paragraph"` flags to supply custom editorial copy.
 4. For an existing Remotion project, copy the relevant template files from `assets/remotion-template/` and merge dependencies without overwriting unrelated work.
    The template includes six default paper backgrounds in `public/backgrounds/`; keep them paired with editions or replace them with licensed project textures.
 5. Build each edition from a complete authored headline sentence and a coherent body paragraph. Store the headline as one template containing exactly one `{{keyword}}` marker; split it only at render time to style the native keyword span.
@@ -39,7 +44,8 @@ Wait for the user's choice before continuing.
 - Treat the newspaper as the scene, not as a background behind floating typography.
 - Keep the keyword in normal document flow at its natural position inside every edition.
 - Author complete sentences and paragraphs; do not model the headline as independent prefix, keyword, and suffix fields or repeat filler copy.
-- Prefer user-supplied `headlineTemplates` and `bodyParagraphs` when provided; use the bundled English copy only as a portable default.
+- Prefer user-supplied `headlineTemplates` and `bodyParagraphs` when provided; otherwise use bundled copy matching `language`.
+- For Chinese, use the bundled CJK font stacks and Chinese line breaking rather than relying on Latin fonts to fall back accidentally.
 - Highlight one complete word with a flat rectangular marker; do not split it into ransom-note letters.
 - Align editions by moving the whole measured page, not by moving or duplicating the keyword.
 - Use no card shadow, torn-paper tile, independent letter rotation, or per-letter entrance.

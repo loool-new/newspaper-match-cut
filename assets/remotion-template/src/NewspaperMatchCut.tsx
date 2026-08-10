@@ -4,6 +4,7 @@ import {z} from 'zod';
 import {zColor} from '@remotion/zod-types';
 
 export const newspaperMatchCutSchema = z.object({
+  language: z.enum(['zh', 'en']),
   keyword: z.string().min(1),
   kicker: z.string(),
   topic: z.string(),
@@ -32,6 +33,7 @@ export const newspaperMatchCutSchema = z.object({
 type Props = z.infer<typeof newspaperMatchCutSchema>;
 type Edition = {
   readonly font: string;
+  readonly zhFont: string;
   readonly weight: number;
   readonly size: number;
   readonly focusTemplate: string;
@@ -47,16 +49,32 @@ type Edition = {
 };
 
 const EDITIONS: readonly Edition[] = [
-  {font: 'Arial, Helvetica, sans-serif', weight: 760, size: 0.073, focusTemplate: '{{topic}} the skills behind a successful {{keyword}}', body: 'In the corporate world, an effective professional must connect people, systems, and decisions without losing sight of the human context. The work combines research, communication, judgment, and careful preparation. As organizations adopt new tools, the role continues to evolve, but its central responsibility remains clear: turn complex information into action that clients and colleagues can understand.', columns: 2, align: 'left', paper: '#e8e5da', texture: 'fibrous-white.png', articleLeft: 18, articleTop: 18, articleWidth: 74, pageScale: 1.01},
-  {font: 'Georgia, Times New Roman, serif', weight: 700, size: 0.064, focusTemplate: 'The evolving role of an {{keyword}} in modern work', body: 'The modern workplace asks professionals to operate across disciplines that once remained separate. They interpret evidence, coordinate specialists, and communicate choices to people with different priorities. This broader mandate rewards clarity and adaptability. It also makes trust essential, because every recommendation must be supported by sound reasoning and an honest account of uncertainty.', columns: 3, align: 'center', paper: '#eeeade', texture: 'soft-gray.png', articleLeft: 5, articleTop: 28, articleWidth: 96, pageScale: 1.04},
-  {font: 'Impact, Arial Narrow Bold, sans-serif', weight: 700, size: 0.075, focusTemplate: 'Technological advances reshape a digital {{keyword}}\u2019s work', body: 'New tools influence how teams collect information, test ideas, and communicate results. Automation can accelerate routine tasks, yet meaningful work still depends on context, verification, and responsible judgment. The strongest practitioners use technology to extend their capabilities rather than conceal weak reasoning, keeping people informed about both the opportunities and the limits of each system.', columns: 2, align: 'left', paper: '#dfddd4', texture: 'aged-cream.png', articleLeft: 9, articleTop: 23, articleWidth: 104, pageScale: 1.03},
-  {font: 'Baskerville, Palatino Linotype, serif', weight: 700, size: 0.068, focusTemplate: 'The evolution of the {{keyword}} in modern organizations', body: 'A close reading of recent changes reveals a profession shaped by growing complexity. Clients expect faster answers, broader expertise, and more transparent decisions. Meeting those expectations requires disciplined research as well as the ability to explain why a particular course of action makes sense. The profession advances when speed and novelty are balanced by accountability.', columns: 3, align: 'right', paper: '#ece8dc', texture: 'halftone-light.png', articleLeft: 2, articleTop: 34, articleWidth: 108, pageScale: 1.02},
-  {font: 'Avenir Next Condensed, Arial Narrow, sans-serif', weight: 800, size: 0.072, focusTemplate: 'What makes a successful {{keyword}} in a changing world', body: 'Preparation begins with understanding the question before searching for an answer. A successful practitioner separates evidence from assumption, listens closely to the people affected, and presents options in language that supports a real decision. These habits are not dramatic, but together they create reliable work and relationships that can withstand uncertainty.', columns: 2, align: 'center', paper: '#e6e2d6', texture: 'halftone-aged.png', articleLeft: 15, articleTop: 20, articleWidth: 82, pageScale: 1.05},
-  {font: 'Courier New, Courier, monospace', weight: 700, size: 0.061, focusTemplate: 'Inside the {{keyword}} file: decisions, systems, and trust', body: 'Documents from the field show how ordinary decisions accumulate into lasting outcomes. Each record captures a question, the evidence available at the time, and the reasoning used to move forward. Read together, they reveal that dependable work is rarely the product of one insight. It emerges from a repeatable process of checking facts, comparing alternatives, and communicating consequences.', columns: 3, align: 'left', paper: '#e3dfd2', texture: 'crumpled-white.png', articleLeft: 12, articleTop: 31, articleWidth: 90, pageScale: 1.0}
+  {font: 'Arial, Helvetica, sans-serif', zhFont: 'PingFang SC, Microsoft YaHei, sans-serif', weight: 760, size: 0.073, focusTemplate: '{{topic}} the skills behind a successful {{keyword}}', body: 'In the corporate world, an effective professional must connect people, systems, and decisions without losing sight of the human context. The work combines research, communication, judgment, and careful preparation. As organizations adopt new tools, the role continues to evolve, but its central responsibility remains clear: turn complex information into action that clients and colleagues can understand.', columns: 2, align: 'left', paper: '#e8e5da', texture: 'fibrous-white.png', articleLeft: 18, articleTop: 18, articleWidth: 74, pageScale: 1.01},
+  {font: 'Georgia, Times New Roman, serif', zhFont: 'Songti SC, STSong, SimSun, serif', weight: 700, size: 0.064, focusTemplate: 'The evolving role of an {{keyword}} in modern work', body: 'The modern workplace asks professionals to operate across disciplines that once remained separate. They interpret evidence, coordinate specialists, and communicate choices to people with different priorities. This broader mandate rewards clarity and adaptability. It also makes trust essential, because every recommendation must be supported by sound reasoning and an honest account of uncertainty.', columns: 3, align: 'center', paper: '#eeeade', texture: 'soft-gray.png', articleLeft: 5, articleTop: 28, articleWidth: 96, pageScale: 1.04},
+  {font: 'Impact, Arial Narrow Bold, sans-serif', zhFont: 'Heiti SC, PingFang SC, Microsoft YaHei, sans-serif', weight: 700, size: 0.075, focusTemplate: 'Technological advances reshape a digital {{keyword}}\u2019s work', body: 'New tools influence how teams collect information, test ideas, and communicate results. Automation can accelerate routine tasks, yet meaningful work still depends on context, verification, and responsible judgment. The strongest practitioners use technology to extend their capabilities rather than conceal weak reasoning, keeping people informed about both the opportunities and the limits of each system.', columns: 2, align: 'left', paper: '#dfddd4', texture: 'aged-cream.png', articleLeft: 9, articleTop: 23, articleWidth: 104, pageScale: 1.03},
+  {font: 'Baskerville, Palatino Linotype, serif', zhFont: 'Kaiti SC, STKaiti, KaiTi, serif', weight: 700, size: 0.068, focusTemplate: 'The evolution of the {{keyword}} in modern organizations', body: 'A close reading of recent changes reveals a profession shaped by growing complexity. Clients expect faster answers, broader expertise, and more transparent decisions. Meeting those expectations requires disciplined research as well as the ability to explain why a particular course of action makes sense. The profession advances when speed and novelty are balanced by accountability.', columns: 3, align: 'right', paper: '#ece8dc', texture: 'halftone-light.png', articleLeft: 2, articleTop: 34, articleWidth: 108, pageScale: 1.02},
+  {font: 'Avenir Next Condensed, Arial Narrow, sans-serif', zhFont: 'Hiragino Sans GB, PingFang SC, Microsoft YaHei, sans-serif', weight: 800, size: 0.072, focusTemplate: 'What makes a successful {{keyword}} in a changing world', body: 'Preparation begins with understanding the question before searching for an answer. A successful practitioner separates evidence from assumption, listens closely to the people affected, and presents options in language that supports a real decision. These habits are not dramatic, but together they create reliable work and relationships that can withstand uncertainty.', columns: 2, align: 'center', paper: '#e6e2d6', texture: 'halftone-aged.png', articleLeft: 15, articleTop: 20, articleWidth: 82, pageScale: 1.05},
+  {font: 'Courier New, Courier, monospace', zhFont: 'STFangsong, FangSong, Songti SC, serif', weight: 700, size: 0.061, focusTemplate: 'Inside the {{keyword}} file: decisions, systems, and trust', body: 'Documents from the field show how ordinary decisions accumulate into lasting outcomes. Each record captures a question, the evidence available at the time, and the reasoning used to move forward. Read together, they reveal that dependable work is rarely the product of one insight. It emerges from a repeatable process of checking facts, comparing alternatives, and communicating consequences.', columns: 3, align: 'left', paper: '#e3dfd2', texture: 'crumpled-white.png', articleLeft: 12, articleTop: 31, articleWidth: 90, pageScale: 1.0}
 ];
 
 export const DEFAULT_HEADLINE_TEMPLATES = EDITIONS.map((edition) => edition.focusTemplate);
 export const DEFAULT_BODY_PARAGRAPHS = EDITIONS.map((edition) => edition.body);
+export const DEFAULT_HEADLINE_TEMPLATES_ZH = [
+  '{{topic}}：重新理解{{keyword}}的核心方法',
+  '变化中的工作方式，正在重塑{{keyword}}的价值',
+  '技术进步如何改变{{keyword}}的创作流程',
+  '从信息到表达：{{keyword}}如何建立清晰叙事',
+  '在快速变化的环境中，什么造就优秀的{{keyword}}',
+  '{{keyword}}工作档案：判断、节奏与信任'
+];
+export const DEFAULT_BODY_PARAGRAPHS_ZH = [
+  '在今天的创作环境中，专业工作需要连接信息、工具与真实的人。可靠的结果来自完整的研究、清晰的沟通和审慎的判断，也来自对细节与节奏的持续关注。',
+  '新的工作方式让不同领域之间的边界逐渐消失。创作者需要理解素材、协调信息，并把复杂选择转化为观众能够迅速理解的表达。',
+  '技术可以提升整理素材和验证想法的速度，但真正有价值的工作仍然依赖语境、核实与责任。工具扩展能力，却不能代替思考。',
+  '面对越来越复杂的信息，清晰的结构比单纯追求速度更加重要。每一次选择都应有依据，也应让观众理解内容为何以这种方式呈现。',
+  '优秀的创作者会先理解问题，再寻找答案。他们区分事实与假设，观察受众的真实需求，并用准确的语言推动有效沟通。',
+  '一个成熟的工作流程通常由许多普通判断累积而成：检查事实、比较方案、确认节奏，并在关键时刻清楚表达后果与选择。'
+];
 
 const PAPER_TEXTURE = `url("${staticFile('paper-fiber.svg')}")`;
 const hash = (value: string): number => {
@@ -93,9 +111,15 @@ const EditorialContent: React.FC<{
   showKeyword: boolean;
 }> = ({props, edition, width, focusParts, body, keywordRef, showKeyword}) => {
   const articleFontSize = width * edition.size;
+  const headlineFont = props.language === 'zh' ? edition.zhFont : edition.font;
+  const bodyFont = props.language === 'zh'
+    ? 'Songti SC, STSong, SimSun, serif'
+    : edition.font.includes('Arial') || edition.font.includes('Avenir')
+      ? 'Arial, sans-serif'
+      : 'Georgia, serif';
   return (
     <>
-      <div style={{position: 'absolute', left: '17%', top: '11%', font: `600 ${width * 0.022}px Arial, sans-serif`, letterSpacing: '0.04em'}}>
+      <div style={{position: 'absolute', left: '17%', top: '11%', font: `600 ${width * 0.022}px ${props.language === 'zh' ? 'PingFang SC, Microsoft YaHei, sans-serif' : 'Arial, sans-serif'}`, letterSpacing: '0.04em'}}>
         {props.kicker}
       </div>
       <article
@@ -105,10 +129,11 @@ const EditorialContent: React.FC<{
           top: `${edition.articleTop}%`,
           width: `${edition.articleWidth}%`,
           textAlign: edition.align,
-          fontFamily: edition.font,
+          fontFamily: headlineFont,
           fontWeight: edition.weight,
           fontSize: articleFontSize,
-          lineHeight: 1.02
+          lineHeight: props.language === 'zh' ? 1.16 : 1.02,
+          wordBreak: props.language === 'zh' ? 'break-all' : 'normal'
         }}
       >
         <div>
@@ -133,11 +158,12 @@ const EditorialContent: React.FC<{
             marginTop: '1.45em',
             columnCount: edition.columns,
             columnGap: width * 0.035,
-            fontFamily: edition.font.includes('Arial') || edition.font.includes('Avenir') ? 'Arial, sans-serif' : 'Georgia, serif',
+            fontFamily: bodyFont,
             fontSize: width * 0.025,
             fontWeight: 500,
-            lineHeight: 1.3,
-            textAlign: 'justify'
+            lineHeight: props.language === 'zh' ? 1.55 : 1.3,
+            textAlign: 'justify',
+            wordBreak: props.language === 'zh' ? 'break-all' : 'normal'
           }}
         >
           {body}
@@ -277,7 +303,7 @@ export const NewspaperMatchCut: React.FC<Props> = (props) => {
   const editionTexture = staticFile(`backgrounds/${edition.texture}`);
 
   return (
-    <AbsoluteFill style={{backgroundColor: edition.paper || props.paperColor, overflow: 'hidden'}}>
+    <AbsoluteFill lang={props.language === 'zh' ? 'zh-CN' : 'en'} style={{backgroundColor: edition.paper || props.paperColor, overflow: 'hidden'}}>
       <AbsoluteFill
         style={{
           backgroundColor: edition.paper || props.paperColor,

@@ -1,7 +1,9 @@
 import {Composition} from 'remotion';
 import {
   DEFAULT_BODY_PARAGRAPHS,
+  DEFAULT_BODY_PARAGRAPHS_ZH,
   DEFAULT_HEADLINE_TEMPLATES,
+  DEFAULT_HEADLINE_TEMPLATES_ZH,
   NewspaperMatchCut,
   newspaperMatchCutSchema
 } from './NewspaperMatchCut';
@@ -17,6 +19,7 @@ export const RemotionRoot: React.FC = () => {
       fps={__FPS__}
       durationInFrames={__DURATION__}
       defaultProps={{
+        language: "__LANGUAGE__",
         keyword: "__KEYWORD__",
         kicker: "__KICKER__",
         topic: "__TOPIC__",

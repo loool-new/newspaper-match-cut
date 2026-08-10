@@ -12,9 +12,10 @@ from pathlib import Path
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("destination", type=Path)
-    parser.add_argument("--keyword", default="AGENT")
-    parser.add_argument("--kicker", default="SOMETHING / HERE / HOME")
-    parser.add_argument("--topic", default="UNDERSTANDING THE MODERN")
+    parser.add_argument("--language", choices=("zh", "en"), default="en")
+    parser.add_argument("--keyword")
+    parser.add_argument("--kicker")
+    parser.add_argument("--topic")
     parser.add_argument(
         "--headline",
         action="append",
@@ -47,21 +48,44 @@ def main() -> int:
     template = Path(__file__).resolve().parents[1] / "assets" / "remotion-template"
     shutil.copytree(template, destination, dirs_exist_ok=True)
 
+    language_defaults = {
+        "zh": {"keyword": "焦点", "kicker": "创作实验室", "topic": "现代创作"},
+        "en": {
+            "keyword": "AGENT",
+            "kicker": "SOMETHING / HERE / HOME",
+            "topic": "UNDERSTANDING THE MODERN",
+        },
+    }[args.language]
+    keyword = args.keyword or language_defaults["keyword"]
+    kicker = args.kicker or language_defaults["kicker"]
+    topic = args.topic or language_defaults["topic"]
+    default_headlines = (
+        "DEFAULT_HEADLINE_TEMPLATES_ZH"
+        if args.language == "zh"
+        else "DEFAULT_HEADLINE_TEMPLATES"
+    )
+    default_bodies = (
+        "DEFAULT_BODY_PARAGRAPHS_ZH"
+        if args.language == "zh"
+        else "DEFAULT_BODY_PARAGRAPHS"
+    )
+
     root = destination / "src" / "Root.tsx"
     source = root.read_text(encoding="utf-8")
     replacements = {
-        "__KEYWORD__": json.dumps(args.keyword, ensure_ascii=False)[1:-1],
-        "__KICKER__": json.dumps(args.kicker, ensure_ascii=False)[1:-1],
-        "__TOPIC__": json.dumps(args.topic, ensure_ascii=False)[1:-1],
+        "__LANGUAGE__": args.language,
+        "__KEYWORD__": json.dumps(keyword, ensure_ascii=False)[1:-1],
+        "__KICKER__": json.dumps(kicker, ensure_ascii=False)[1:-1],
+        "__TOPIC__": json.dumps(topic, ensure_ascii=False)[1:-1],
         "__HEADLINE_TEMPLATES__": (
             json.dumps(args.headline, ensure_ascii=False)
             if args.headline
-            else "DEFAULT_HEADLINE_TEMPLATES"
+            else default_headlines
         ),
         "__BODY_PARAGRAPHS__": (
             json.dumps(args.body, ensure_ascii=False)
             if args.body
-            else "DEFAULT_BODY_PARAGRAPHS"
+            else default_bodies
         ),
         "__WIDTH__": str(args.width),
         "__HEIGHT__": str(args.height),

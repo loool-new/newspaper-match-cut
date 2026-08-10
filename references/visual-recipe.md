@@ -52,6 +52,14 @@ Vary whole editions, not letters:
 
 Use local licensed fonts if supplied. System-font stacks are only a portable fallback.
 
+## Language support
+
+- Set `language` to `zh` or `en` before choosing the text source.
+- Chinese defaults must contain natural complete Chinese headlines and paragraphs, not translated fragments.
+- Use Chinese headline variation through PingFang/Heiti, Songti, Kaiti, Hiragino Sans GB, and FangSong stacks. Use explicit CJK fallbacks on macOS and Windows.
+- Chinese headlines use a slightly larger line height and `word-break: break-all`; Chinese body copy uses a comfortable 1.55 line height.
+- Preserve the same `{{keyword}}` marker and native-flow alignment rules in both languages.
+
 ## Bundled paper backgrounds
 
 Assign one background per edition from `public/backgrounds/`: `fibrous-white.png`, `soft-gray.png`, `aged-cream.png`, `halftone-light.png`, `halftone-aged.png`, and `crumpled-white.png`. Load them with `staticFile()`, use `background-size: cover`, and keep the SVG fiber overlay subtle. Do not apply the same texture to every edition.
@@ -62,7 +70,7 @@ Author every focus headline as a complete natural sentence containing exactly on
 
 ## Parameters
 
-Expose `keyword`, `kicker`, `topic`, `headlineTemplates`, `bodyParagraphs`, `seed`, `accentColor`, `paperColor`, `inkColor`, `cutIntervalFrames`, `settleFrame`, `focusY`, `blurMin`, `blurMax`, and `focusScale`. `headlineTemplates` contains complete sentences with exactly one `{{keyword}}` marker; `bodyParagraphs` contains complete paragraphs. Cycle each non-empty array by edition index.
+Expose `language`, `keyword`, `kicker`, `topic`, `headlineTemplates`, `bodyParagraphs`, `seed`, `accentColor`, `paperColor`, `inkColor`, `cutIntervalFrames`, `settleFrame`, `focusY`, `blurMin`, `blurMax`, and `focusScale`. `headlineTemplates` contains complete sentences with exactly one `{{keyword}}` marker; `bodyParagraphs` contains complete paragraphs. Cycle each non-empty array by edition index.
 
 ## Verification
 
